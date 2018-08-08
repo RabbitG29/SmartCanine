@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "170543238936",
+    "firebase_url": "https://smartcanine-c15e7.firebaseio.com",
+    "project_id": "smartcanine-c15e7",
+    "storage_bucket": "smartcanine-c15e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170543238936:android:2100771cff24aace",
+        "android_client_info": {
+          "package_name": "kr.inha.ice.smartcanine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "170543238936-n1l18bvsicope65h3tdgi0v19h3saddm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxhChtrs9WJVh74qenIIQOsQY0Sk_T3ro"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
