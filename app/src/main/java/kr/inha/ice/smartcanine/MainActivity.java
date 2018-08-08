@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -31,34 +30,37 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
+    /*---Firebase 변수들----*/
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    /*---문자 전송 변수----*/
     SmsManager mSMSManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button test = (Button) findViewById(R.id.test);
+        /*----UUID와 문자 전송을 위한 권한확인(API 23 이상)----*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 50);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 50);
 
-        final String uuid = GetDevicesUUID(getApplicationContext());
+        final String uuid = GetDevicesUUID(getApplicationContext()); // uuid 받아옴
 
         /*--Firebase---*/
-        final DatabaseReference usersRef = databaseReference.child("users");
-        Map<String, User> users = new HashMap<>();
-        users.put(uuid, new User("권동현", "01029588370", "01050164231"));
-        usersRef.setValue(users);
+        final DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
+        Map<String, User> users = new HashMap<>(); // String은 고유키
+        users.put(uuid, new User("권동현", "01029588370", "01050164231")); // User class 자체를 보내버림
+        usersRef.setValue(users); // firebase에 set
 
-        test.setOnClickListener(new View.OnClickListener() {
+        test.setOnClickListener(new View.OnClickListener() { // test 버튼 누를 경우
             public void onClick(View v) {
-                usersRef.child(uuid).addValueEventListener(new ValueEventListener() {
+                usersRef.child(uuid).addValueEventListener(new ValueEventListener() { // 데이터 Read를 위한 리스너
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
-                        sendSms(user.userName, user.gdPhone);
+                        sendSms(user.userName, user.gdPhone); // 문자 보내기
                     }
 
                     @Override
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         else
             return "fail";
     }
+    /*---문자 보내는 함수----*/
     public void sendSms(String userName, String gdPhone){
         mSMSManager = SmsManager.getDefault();
         //메시지
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         mSMSManager.sendTextMessage(gdPhone, null, smsText, sentPI, recvPI);
 
     }
+    /*----문자 잘 갔는지 보는 브로드캐스트 리시버 두 개----*/
     BroadcastReceiver mSentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -123,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
     BroadcastReceiver mRecvReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -138,13 +141,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 }
-
+/*----사용자 정의형 자료형----*/
 class User {
+    // 사실 밑에 다 private로 처리해도 됨
     public String userName;
     public String myPhone;
     public String uuid;
     public String gdPhone;
-
+    /*---기본 생성자가 없으면 Firebase에서 값 읽을 때 에러남----*/
     public User() {
         this.userName="";
         this.myPhone="";
