@@ -25,21 +25,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
+    private long lastTimeBackPressed; // 뒤로가기 버튼 두 번 사이의 간격 체크 변수
     /*---Firebase 변수들----*/
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
     /*---문자 전송 변수----*/
     SmsManager mSMSManager;
+
+    long now = System.currentTimeMillis();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button test = (Button) findViewById(R.id.test);
+        Button userinfoButton = (Button) findViewById(R.id.userinfoButton);
         /*----UUID와 문자 전송을 위한 권한확인(API 23 이상)----*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 50);
@@ -48,12 +55,16 @@ public class MainActivity extends AppCompatActivity {
 
         final String uuid = GetDevicesUUID(getApplicationContext()); // uuid 받아옴
 
+        /*------사용자 설정 버튼을 누르면 사용자 설정 화면으로 이동-------*/
+        userinfoButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserinfoActivity.class);
+                startActivity(intent);
+            }
+        });
+
         /*--Firebase---*/
         final DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
-        Map<String, User> users = new HashMap<>(); // String은 고유키
-        users.put(uuid, new User("권동현", "01029588370", "01050164231")); // User class 자체를 보내버림
-        usersRef.setValue(users); // firebase에 set
-
         test.setOnClickListener(new View.OnClickListener() { // test 버튼 누를 경우
             public void onClick(View v) {
                 usersRef.child(uuid).addValueEventListener(new ValueEventListener() { // 데이터 Read를 위한 리스너
@@ -89,8 +100,12 @@ public class MainActivity extends AppCompatActivity {
     /*---문자 보내는 함수----*/
     public void sendSms(String userName, String gdPhone){
         mSMSManager = SmsManager.getDefault();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분");
+        String getTime = sdf.format(date);
+
         //메시지
-        String smsText = userName+"님이 월요일 아침 약을 복용하셨습니다.";
+        String smsText = userName+"님이 "+getTime+"에 약을 복용하셨습니다.";
         Log.e("body", smsText);
         //송신 인텐트
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT"), 0);
@@ -140,6 +155,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    /*--------뒤로가기 두 번 누르면 앱 종료----------*/
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - lastTimeBackPressed < 1500) {
+            finish();
+            return;
+        }
+        Toast.makeText(this, "'뒤로' 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+        lastTimeBackPressed = System.currentTimeMillis();
+    }
 }
 /*----사용자 정의형 자료형----*/
 class User {

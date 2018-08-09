@@ -10,6 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사용자 설정"
+            android:layout_gravity="right"
+            android:id="@+id/userinfoButton"
+            />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="kr.inha.ice.smartcanine.MainActivity"
+    tools:showIn="@layout/activity_userinfo">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textname"
+        android:text="이름"
+        android:layout_above="@+id/editname"
+        />
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:id="@+id/editname"
+        android:layout_above="@+id/textec"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textec"
+        android:layout_above="@id/editec"
+        android:text="보호자 휴대폰 번호"
+        />
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionNext"
+        android:inputType="number"
+        android:layout_centerVertical="true"
+        android:id="@+id/editec"
+        android:hint="ex) 01012345678"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editec"
+        android:layout_marginTop="10dp"
+        android:text="제출"
+        android:id="@+id/submitButton"
+        />
+
+</RelativeLayout>
