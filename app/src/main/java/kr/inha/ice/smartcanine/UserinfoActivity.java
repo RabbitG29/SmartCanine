@@ -2,7 +2,6 @@ package kr.inha.ice.smartcanine;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -53,10 +52,8 @@ public class UserinfoActivity extends AppCompatActivity {
                 String Name = name.getText().toString();
                 String EcphoneNumber = ecphoneNumber.getText().toString();
                 /*--Firebase---*/
-                final DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
-                Map<String, User> users = new HashMap<>(); // String은 고유키
-                users.put(uuid, new User(Name, myphone, EcphoneNumber)); // User class 자체를 보내버림
-                usersRef.setValue(users); // firebase에 set
+                DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
+                usersRef.child(uuid).setValue(new User(Name, myphone, EcphoneNumber)); // firebase에 set
                 Log.e("tag","execute");
                 Toast.makeText(getApplicationContext(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
                 finish();

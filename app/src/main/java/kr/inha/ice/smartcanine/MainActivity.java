@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
     /*---문자 전송 변수----*/
     SmsManager mSMSManager;
 
-    long now = System.currentTimeMillis();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +69,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
-                        sendSms(user.userName, user.gdPhone); // 문자 보내기
+                        long now = System.currentTimeMillis();
+                        Date date = new Date(now);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분");
+                        String getTime = sdf.format(date);
+                        sendSms(user.userName, user.gdPhone, getTime); // 문자 보내기
+                        /*--Firebase에 로그기록---*/
+                        final DatabaseReference userslogRef = databaseReference.child("userlog"); // child의 인자가 테이블 이름? 정도로 되는듯?
+                        String getKey = userslogRef.push().getKey();
+                        userslogRef.child(getKey).setValue(new Userlog(user.userName, getTime, uuid)); // firebase에 set
+                        usersRef.child(uuid).removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
                     }
 
                     @Override
@@ -98,11 +105,8 @@ public class MainActivity extends AppCompatActivity {
             return "fail";
     }
     /*---문자 보내는 함수----*/
-    public void sendSms(String userName, String gdPhone){
+    public void sendSms(String userName, String gdPhone, String getTime){
         mSMSManager = SmsManager.getDefault();
-        Date date = new Date(now);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분");
-        String getTime = sdf.format(date);
 
         //메시지
         String smsText = userName+"님이 "+getTime+"에 약을 복용하셨습니다.";
@@ -169,21 +173,37 @@ public class MainActivity extends AppCompatActivity {
 /*----사용자 정의형 자료형----*/
 class User {
     // 사실 밑에 다 private로 처리해도 됨
-    public String userName;
-    public String myPhone;
-    public String uuid;
-    public String gdPhone;
+    String userName;
+    String myPhone;
+    String uuid;
+    String gdPhone;
     /*---기본 생성자가 없으면 Firebase에서 값 읽을 때 에러남----*/
-    public User() {
+    User() {
         this.userName="";
         this.myPhone="";
         this.uuid="";
         this.gdPhone="";
     }
 
-    public User(String userName, String myPhone, String gdPhone) {
+    User(String userName, String myPhone, String gdPhone) {
         this.userName = userName;
         this.myPhone = myPhone;
         this.gdPhone = gdPhone;
+    }
+}
+
+class Userlog {
+    String userName;
+    String userTime;
+    String uuid;
+    Userlog() {
+        this.userName="";
+        this.userTime="";
+        this.uuid="";
+    }
+    Userlog(String userName, String userTime, String uuid) {
+        this.userName=userName;
+        this.userTime=userTime;
+        this.uuid=uuid;
     }
 }
