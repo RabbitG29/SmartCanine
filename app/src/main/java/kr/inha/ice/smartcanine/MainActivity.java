@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         final DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
         test.setOnClickListener(new View.OnClickListener() { // test 버튼 누를 경우
             public void onClick(View v) {
-                usersRef.child(uuid).addValueEventListener(new ValueEventListener() { // 데이터 Read를 위한 리스너
+                usersRef.child("1").addValueEventListener(new ValueEventListener() { // 데이터 Read를 위한 리스너
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
                         /*--Firebase에 로그기록---*/
                         final DatabaseReference userslogRef = databaseReference.child("userlog"); // child의 인자가 테이블 이름? 정도로 되는듯?
                         String getKey = userslogRef.push().getKey();
-                        userslogRef.child(getKey).setValue(new Userlog(user.userName, getTime, uuid)); // firebase에 set
-                        usersRef.child(uuid).removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
+                        userslogRef.child(getKey).setValue(new Userlog(user.userName, getTime, user.serialNumber)); // firebase에 set
+                        usersRef.child("1").removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
                     }
 
                     @Override
@@ -175,35 +175,36 @@ class User {
     // 사실 밑에 다 private로 처리해도 됨
     String userName;
     String myPhone;
-    String uuid;
+    String serialNumber;
     String gdPhone;
     /*---기본 생성자가 없으면 Firebase에서 값 읽을 때 에러남----*/
     User() {
         this.userName="";
         this.myPhone="";
-        this.uuid="";
+        this.serialNumber="";
         this.gdPhone="";
     }
 
-    User(String userName, String myPhone, String gdPhone) {
+    User(String userName, String myPhone, String gdPhone, String serialNumber) {
         this.userName = userName;
         this.myPhone = myPhone;
         this.gdPhone = gdPhone;
+        this.serialNumber = serialNumber;
     }
 }
 
 class Userlog {
     String userName;
     String userTime;
-    String uuid;
+    String serialNumber;
     Userlog() {
         this.userName="";
         this.userTime="";
-        this.uuid="";
+        this.serialNumber="";
     }
-    Userlog(String userName, String userTime, String uuid) {
+    Userlog(String userName, String userTime, String serialNumber) {
         this.userName=userName;
         this.userTime=userTime;
-        this.uuid=uuid;
+        this.serialNumber=serialNumber;
     }
 }

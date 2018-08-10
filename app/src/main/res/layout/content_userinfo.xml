@@ -40,10 +40,25 @@
         android:id="@+id/editec"
         android:hint="ex) 01012345678"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/serial"
+        android:layout_below="@id/editec"
+        android:text="약통 시리얼넘버"
+        />
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:layout_below="@id/serial"
+        android:id="@+id/editserial"
+        />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editec"
+        android:layout_below="@id/editserial"
         android:layout_marginTop="10dp"
         android:text="제출"
         android:id="@+id/submitButton"

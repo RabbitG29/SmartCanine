@@ -24,6 +24,7 @@ import java.util.UUID;
 public class UserinfoActivity extends AppCompatActivity {
     EditText name;
     EditText ecphoneNumber;
+    EditText serialNumber;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
     @Override
@@ -33,16 +34,18 @@ public class UserinfoActivity extends AppCompatActivity {
 
         name = (EditText) findViewById(R.id.editname);
         ecphoneNumber = (EditText) findViewById(R.id.editec);
+        serialNumber = (EditText) findViewById(R.id.editserial);
         Button submitButton = (Button) findViewById(R.id.submitButton);
         /*-------마지막 입력 정보 기억---------*/
         SharedPreferences sf = getSharedPreferences("PrefName", MODE_PRIVATE);
         String preName = sf.getString("name", "");
         String preEcphone = sf.getString("ecphoneNumber", "");
+        String preSerial = sf.getString("serialNumber", "");
         name.setText(preName);
         ecphoneNumber.setText(preEcphone);
+        serialNumber.setText(preSerial);
 
-        /*-------uuid와 phone number, url 가져오기--------*/
-        final String uuid = GetDevicesUUID(this);
+        /*-------phone number가져오기--------*/
         final String myphone = getPhoneNumber();
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -51,9 +54,10 @@ public class UserinfoActivity extends AppCompatActivity {
                 /*----EditText의 String화------*/
                 String Name = name.getText().toString();
                 String EcphoneNumber = ecphoneNumber.getText().toString();
+                String SerialNumber = serialNumber.getText().toString();
                 /*--Firebase---*/
                 DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
-                usersRef.child(uuid).setValue(new User(Name, myphone, EcphoneNumber)); // firebase에 set
+                usersRef.child(SerialNumber).setValue(new User(Name, myphone, EcphoneNumber, SerialNumber)); // firebase에 set
                 Log.e("tag","execute");
                 Toast.makeText(getApplicationContext(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
                 finish();
@@ -69,24 +73,11 @@ public class UserinfoActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
         String tempName = name.getText().toString();
         String tempEcphone = ecphoneNumber.getText().toString();
+        String tempSerial = serialNumber.getText().toString();
         editor.putString("name", tempName);
         editor.putString("ecphoneNumber", tempEcphone);
+        editor.putString("serialNumber", tempSerial);
         editor.commit();
-    }
-    /*--------uuid 받아오기----------*/
-    public String GetDevicesUUID(Context mContext) {
-        final TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, tmSerial, androidId;
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            tmDevice = "" + tm.getDeviceId();
-            tmSerial = "" + tm.getSimSerialNumber();
-            androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-            UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
-            String deviceId = deviceUuid.toString();
-            return deviceId;
-        }
-        else
-            return "fail";
     }
     /*--------phone number 받아오기--------*/
     public String getPhoneNumber() {
