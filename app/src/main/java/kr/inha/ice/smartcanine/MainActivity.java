@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
     /*---문자 전송 변수----*/
     SmsManager mSMSManager;
+    int count=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,24 +61,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         /*--Firebase---*/
         final DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
-        test.setOnClickListener(new View.OnClickListener() { // test 버튼 누를 경우
-            public void onClick(View v) {
+        final DatabaseReference logRef = databaseReference.child("devices");
+        logRef.child("0A:00:27:00:00:17").child("currentPos").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(count==0) {
+                    count++;
+                    return;
+                }
                 usersRef.child("1").addValueEventListener(new ValueEventListener() { // 데이터 Read를 위한 리스너
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.e("send","send");
                         User user = dataSnapshot.getValue(User.class);
                         long now = System.currentTimeMillis();
                         Date date = new Date(now);
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분");
                         String getTime = sdf.format(date);
                         sendSms(user.userName, user.gdPhone, getTime); // 문자 보내기
-                        /*--Firebase에 로그기록---*/
-                        final DatabaseReference userslogRef = databaseReference.child("userlog"); // child의 인자가 테이블 이름? 정도로 되는듯?
-                        String getKey = userslogRef.push().getKey();
-                        userslogRef.child(getKey).setValue(new Userlog(user.userName, getTime, user.serialNumber)); // firebase에 set
                         usersRef.child("1").removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
                     }
 
@@ -86,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -190,21 +198,5 @@ class User {
         this.myPhone = myPhone;
         this.gdPhone = gdPhone;
         this.serialNumber = serialNumber;
-    }
-}
-
-class Userlog {
-    String userName;
-    String userTime;
-    String serialNumber;
-    Userlog() {
-        this.userName="";
-        this.userTime="";
-        this.serialNumber="";
-    }
-    Userlog(String userName, String userTime, String serialNumber) {
-        this.userName=userName;
-        this.userTime=userTime;
-        this.serialNumber=serialNumber;
     }
 }
