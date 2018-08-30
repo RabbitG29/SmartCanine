@@ -17,6 +17,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -44,8 +45,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button test = (Button) findViewById(R.id.test);
         Button userinfoButton = (Button) findViewById(R.id.userinfoButton);
+        final TextView slot0 = (TextView) findViewById(R.id.slot0);
+        final TextView slot1 = (TextView) findViewById(R.id.slot1);
+        final TextView slot2 = (TextView) findViewById(R.id.slot2);
+        final TextView slot3 = (TextView) findViewById(R.id.slot3);
+        final TextView slot4 = (TextView) findViewById(R.id.slot4);
+        final TextView slot5 = (TextView) findViewById(R.id.slot5);
+        final TextView slot6 = (TextView) findViewById(R.id.slot6);
+        final TextView slot7 = (TextView) findViewById(R.id.slot7);
+        final TextView slot8 = (TextView) findViewById(R.id.slot8);
+
         /*----UUID와 문자 전송을 위한 권한확인(API 23 이상)----*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 50);
@@ -71,6 +81,117 @@ public class MainActivity extends AppCompatActivity {
                     count++;
                     return;
                 }
+                long currentPos = dataSnapshot.getValue(Long.class);
+                if(currentPos==0) {
+                    slot0.setText("O");
+                    slot1.setText("O");
+                    slot2.setText("O");
+                    slot3.setText("O");
+                    slot4.setText("O");
+                    slot5.setText("O");
+                    slot6.setText("O");
+                    slot7.setText("O");
+                    slot8.setText("O");
+                }
+                else if(currentPos==1) {
+                    slot0.setText("X");
+                    slot1.setText("O");
+                    slot2.setText("O");
+                    slot3.setText("O");
+                    slot4.setText("O");
+                    slot5.setText("O");
+                    slot6.setText("O");
+                    slot7.setText("O");
+                    slot8.setText("O");
+                }
+                else if(currentPos==2) {
+                    slot0.setText("X");
+                    slot1.setText("X");
+                    slot2.setText("O");
+                    slot3.setText("O");
+                    slot4.setText("O");
+                    slot5.setText("O");
+                    slot6.setText("O");
+                    slot7.setText("O");
+                    slot8.setText("O");
+                }
+                else if(currentPos==3) {
+                    slot0.setText("X");
+                    slot1.setText("X");
+                    slot2.setText("X");
+                    slot3.setText("O");
+                    slot4.setText("O");
+                    slot5.setText("O");
+                    slot6.setText("O");
+                    slot7.setText("O");
+                    slot8.setText("O");
+                }
+                else if(currentPos==4) {
+                    slot0.setText("X");
+                    slot1.setText("X");
+                    slot2.setText("X");
+                    slot3.setText("X");
+                    slot4.setText("O");
+                    slot5.setText("O");
+                    slot6.setText("O");
+                    slot7.setText("O");
+                    slot8.setText("O");
+                }
+                else if(currentPos==5) {
+                    slot0.setText("X");
+                    slot1.setText("X");
+                    slot2.setText("X");
+                    slot3.setText("X");
+                    slot4.setText("X");
+                    slot5.setText("O");
+                    slot6.setText("O");
+                    slot7.setText("O");
+                    slot8.setText("O");
+                }
+                else if(currentPos==6) {
+                    slot0.setText("X");
+                    slot1.setText("X");
+                    slot2.setText("X");
+                    slot3.setText("X");
+                    slot4.setText("X");
+                    slot5.setText("X");
+                    slot6.setText("O");
+                    slot7.setText("O");
+                    slot8.setText("O");
+                }
+                else if(currentPos==6) {
+                    slot0.setText("X");
+                    slot1.setText("X");
+                    slot2.setText("X");
+                    slot3.setText("X");
+                    slot4.setText("X");
+                    slot5.setText("X");
+                    slot6.setText("X");
+                    slot7.setText("O");
+                    slot8.setText("O");
+                }
+                else if(currentPos==7) {
+                    slot0.setText("X");
+                    slot1.setText("X");
+                    slot2.setText("X");
+                    slot3.setText("X");
+                    slot4.setText("X");
+                    slot5.setText("X");
+                    slot6.setText("X");
+                    slot7.setText("X");
+                    slot8.setText("O");
+                }
+                else if(currentPos==8) {
+                    slot0.setText("X");
+                    slot1.setText("X");
+                    slot2.setText("X");
+                    slot3.setText("X");
+                    slot4.setText("X");
+                    slot5.setText("X");
+                    slot6.setText("X");
+                    slot7.setText("X");
+                    slot8.setText("X");
+                }
                 usersRef.child("1").addValueEventListener(new ValueEventListener() { // 데이터 Read를 위한 리스너
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -80,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                         Date date = new Date(now);
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분");
                         String getTime = sdf.format(date);
-                        sendSms(user.userName, user.gdPhone, getTime); // 문자 보내기
+                        //sendSms(user.userName, user.gdPhone, getTime); // 문자 보내기
                         usersRef.child("1").removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
                     }
 
