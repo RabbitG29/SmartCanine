@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Console;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_main);
         SharedPreferences sf = getSharedPreferences("PrefOut", MODE_PRIVATE);
         Button userinfoButton = (Button) findViewById(R.id.userinfoButton);
@@ -105,12 +109,8 @@ public class MainActivity extends AppCompatActivity {
         empty = (TextView) findViewById(R.id.empty);
         empty.setText(sf.getString("empty",""));
 
-        Calendar mCalendar = Calendar.getInstance();
-        mCalendar.set(Calendar.HOUR_OF_DAY, 9);
-        mCalendar.set(Calendar.MINUTE,25);
-        mCalendar.set(Calendar.SECOND,0);
 
-        Intent mAlarmIntent = new Intent("ALARM_START");
+        Intent mAlarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
         PendingIntent mPendingIntent =
                 PendingIntent.getBroadcast(
                         this,
@@ -120,12 +120,32 @@ public class MainActivity extends AppCompatActivity {
                 );
 
         AlarmManager mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        mAlarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                mCalendar.getTimeInMillis(),
-                mPendingIntent
-        );
 
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.set(Calendar.HOUR_OF_DAY, 20);
+        mCalendar.set(Calendar.MINUTE,53);
+        mCalendar.set(Calendar.SECOND,0);
+
+//        mAlarmManager.setExact(
+//                AlarmManager.RTC_WAKEUP,
+//                mCalendar.getTimeInMillis(),
+//                mPendingIntent
+//        );
+        Date _date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.SECOND, 5);
+
+        mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 60000, mPendingIntent);
+        Log.i("Alarm", "SET REPEATING");
+
+
+        timeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TimePickerActivity.class);
+                startActivity(intent);
+            }
+        });
         /*----메모----*/
         loadButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

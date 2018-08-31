@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-feature
@@ -46,13 +47,21 @@
             android:name=".UserinfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddPillActivity" />
-        <activity android:name=".PillInfoActivity" />
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ALARM_START" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".TestousSoundService"
             android:enabled="true"
-            android:exported="true"></service>
-        <receiver android:name=".BroadcastD"></receiver>
+            android:exported="true" />
+
+        <activity android:name=".TimePickerActivity"></activity>
     </application>
 
 </manifest>
