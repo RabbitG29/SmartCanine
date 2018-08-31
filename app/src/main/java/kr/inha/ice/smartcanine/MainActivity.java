@@ -56,6 +56,15 @@ public class MainActivity extends AppCompatActivity {
         final TextView slot7 = (TextView) findViewById(R.id.slot7);
         final TextView slot8 = (TextView) findViewById(R.id.slot8);
 
+        Button addPill = (Button) findViewById(R.id.addPill);
+        addPill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AddPillActivity.class);
+                startActivity(intent);
+            }
+        });
+
         /*----UUID와 문자 전송을 위한 권한확인(API 23 이상)----*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 50);

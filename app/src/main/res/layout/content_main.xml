@@ -246,6 +246,7 @@
          android:layout_height="wrap_content"
          android:layout_marginRight="30dp"
          android:layout_weight="1"
+         android:id="@+id/addPill"
          android:text="약품 추가"
          />
         <Button
