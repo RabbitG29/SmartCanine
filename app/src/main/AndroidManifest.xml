@@ -17,9 +17,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="스마트 약통"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
@@ -46,6 +46,7 @@
             android:name=".UserinfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddPillActivity" />
+        <activity android:name=".PillInfoActivity" />
 
         <service
             android:name=".TestousSoundService"
