@@ -24,199 +24,222 @@
         android:id="@+id/table"
         android:layout_below="@id/title"
         android:layout_marginTop="@dimen/fab_margin"
+        android:background="#FFFFFF"
+        android:padding="2dp"
+        android:stretchColumns="*"
         >
 
-        <TableRow>
+        <TableRow
+            android:background="#FFFFFF">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#E6DFDC"
+                android:textColor="#000000"
                 android:text="칸0"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#FFFFFF"
+                android:background="#C8DECF"
                 android:textColor="#000000"
                 android:text="칸1"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#DEBBBD"
+                android:textColor="#000000"
                 android:text="칸2"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#FFFFFF"
+                android:background="#E6DFDC"
                 android:textColor="#000000"
                 android:text="칸3"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#C8DECF"
+                android:textColor="#000000"
                 android:text="칸4"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#FFFFFF"
+                android:background="#DEBBBD"
                 android:textColor="#000000"
                 android:text="칸5"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#E6DFDC"
+                android:textColor="#000000"
                 android:text="칸6"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#FFFFFF"
+                android:background="#C8DECF"
                 android:textColor="#000000"
                 android:text="칸7"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#DEBBBD"
+                android:textColor="#000000"
                 android:text="칸8"
                 android:layout_weight="1"
                 android:textAlignment="center"
+                android:layout_margin="1dp"
                 />
         </TableRow>
-        <TableRow>
+        <TableRow
+            android:background="#FFFFFF">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#E6DFDC"
+                android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot0"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#FFFFFF"
+                android:background="#C8DECF"
                 android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot1"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#DEBBBD"
+                android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot2"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#FFFFFF"
+                android:background="#E6DFDC"
                 android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot3"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#C8DECF"
+                android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot4"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#FFFFFF"
+                android:background="#DEBBBD"
                 android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot5"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#E6DFDC"
+                android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot6"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#FFFFFF"
+                android:background="#C8DECF"
                 android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot7"
+                android:layout_margin="1dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="#000000"
-                android:textColor="#FFFFFF"
+                android:background="#DEBBBD"
+                android:textColor="#000000"
                 android:text="O"
                 android:layout_weight="1"
                 android:id="@+id/slot8"
+                android:layout_margin="1dp"
                 />
         </TableRow>
 
@@ -254,6 +277,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="시간 설정"
+            android:id="@+id/time"
             />
     </LinearLayout>
     <LinearLayout
@@ -277,7 +301,46 @@
             android:layout_weight="1"
             android:textOff="외출모드"
             android:textOn="실내모드"
+            android:id="@+id/outdoorButton"
             />
+    </LinearLayout>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/memo"
+        android:hint="메모를 입력하세요"
+        android:layout_below="@id/linear2"
+        android:layout_marginTop="@dimen/fab_margin"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/memo"
+        android:id="@+id/linear3"
+        android:layout_marginTop="@dimen/fab_margin"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="저장"
+            android:id="@+id/saveButton"
+            android:layout_weight="1"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="불러오기"
+            android:id="@+id/loadButton"
+            android:layout_weight="1"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="삭제"
+            android:id="@+id/deleteButton"
+            android:layout_weight="1"
+            />
+
     </LinearLayout>
 
 </RelativeLayout>
