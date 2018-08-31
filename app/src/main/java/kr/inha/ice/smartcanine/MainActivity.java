@@ -72,11 +72,7 @@ public class MainActivity extends AppCompatActivity {
         Button loadButton = (Button) findViewById(R.id.loadButton);
         Button deleteButton = (Button) findViewById(R.id.deleteButton);
         Button addButton = (Button) findViewById(R.id.add);
-<<<<<<< HEAD
-
-=======
         Button infoButton = (Button) findViewById(R.id.info);
->>>>>>> 375efbb16d02d8a1e6bd1576b999bcfb60110e8c
         outdoorButton = (ToggleButton) findViewById(R.id.outdoorButton);
         outdoorButton.setChecked(sf.getBoolean("btnOut_state",true));
         timeButton = (Button) findViewById(R.id.time);
