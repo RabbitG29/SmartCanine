@@ -308,6 +308,7 @@ public class AddPillActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             Log.i("Firebase", String.valueOf(error));
                             Log.i("Firebase", "ERROR!");
+                            Toast.makeText(mContext, "Firebase ", Toast.LENGTH_LONG).show();
                         }
                     });
 
