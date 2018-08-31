@@ -6,4 +6,180 @@
     android:layout_height="match_parent"
     tools:context=".TimePickerActivity">
 
+    <TextView
+        android:id="@+id/MainAlarmHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+
+        android:text="복용 시간 설정"
+
+        android:textAlignment="center"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/MorningBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_margin="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/MainAlarmHeader"
+        tools:layout_editor_absoluteX="0dp">
+
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:text="아침"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.074"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.083" />
+
+        <EditText
+            android:id="@+id/MorningTime"
+            android:layout_width="180dp"
+            android:layout_height="59dp"
+            android:editable="false"
+            android:gravity="center"
+            android:ems="10"
+            android:inputType="time"
+            app:layout_constraintStart_toEndOf="@+id/textView3"
+            tools:layout_editor_absoluteY="46dp" />
+
+        <Button
+            android:id="@+id/EditMorning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="선택" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LunchBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_margin="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/MorningBox"
+
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="97dp">
+
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:text="점심"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.074"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.083" />
+
+        <EditText
+            android:id="@+id/LunchTime"
+            android:layout_width="180dp"
+            android:layout_height="59dp"
+            android:ems="10"
+            android:editable="false"
+            android:gravity="center"
+            android:inputType="time"
+            app:layout_constraintStart_toEndOf="@+id/textView3"
+            tools:layout_editor_absoluteY="46dp" />
+
+        <Button
+            android:id="@+id/EditLunch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="선택" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/DinnerBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_margin="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LunchBox"
+
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="156dp">
+
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:text="저녁"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.074"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.083" />
+
+        <EditText
+            android:id="@+id/DinnerTime"
+            android:layout_width="180dp"
+            android:layout_height="59dp"
+            android:editable="false"
+            android:gravity="center"
+            android:ems="10"
+            android:inputType="time"
+            app:layout_constraintStart_toEndOf="@+id/textView3"
+            tools:layout_editor_absoluteY="46dp" />
+
+        <Button
+            android:id="@+id/EditDinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="선택"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/MorningText"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="저장"
+        android:id="@+id/timePickerSave"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/DinnerBox"
+
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="돌아가기"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/DinnerBox"
+        app:layout_constraintStart_toEndOf="@id/timePickerSave"
+        />
+
 </android.support.constraint.ConstraintLayout>
