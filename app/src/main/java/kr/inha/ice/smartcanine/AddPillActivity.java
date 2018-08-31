@@ -15,6 +15,11 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,10 +35,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hankcs.algorithm.AhoCorasickDoubleArrayTrie;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -55,8 +64,11 @@ public class AddPillActivity extends AppCompatActivity {
     String mCurrentPhotoPath;
     String mFileName;
     ArrayList<PillInfo> mPillList;
+    ArrayList<PillInfo> myPillList;
     Context mContext;
-
+    TextView pTV;
+    ProgressBar pB;
+    TextView mTextView;
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -125,6 +137,14 @@ public class AddPillActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_pill);
+        mTextView = (TextView) findViewById(R.id.textView);
+        pB = (ProgressBar) findViewById(R.id.progressBar);
+        pB.setVisibility(View.VISIBLE);
+
+        pTV = (TextView) findViewById(R.id.progressBarTextView);
+        pTV.setText("처리 준비중...");
+        mTextView.setText("");
+
 
         mContext = this;
         // Firebase 인증 상태를 가져온다
@@ -209,7 +229,7 @@ public class AddPillActivity extends AppCompatActivity {
             StorageReference storageRef = storage.getReference();
             StorageReference imageRef = storageRef.child("images/"+mFileName);
 
-            Toast.makeText(mContext, "이미지를 클라우드로 전송중..", Toast.LENGTH_LONG).show();
+            pTV.setText("이미지를 클라우드로 전송중..");
 
             UploadTask uploadTask = imageRef.putBytes(datas);
 
@@ -224,7 +244,9 @@ public class AddPillActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     // ...
-                    Toast.makeText(mContext, "이미지 업로드가 성공적으로 완료되었습니다.", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(mContext, "이미지 업로드가 성공적으로 완료되었습니다.", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(mContext, "클라우드에서 이미지 분석중입니다.", Toast.LENGTH_LONG).show();
+                    pTV.setText("클라우드에서 이미지 분석중...");
 
                     Log.i("Firebase", "업로드 성공");
                     String url = "https://us-central1-smartcanine-c15e7.cloudfunctions.net/textRecognition?img="+mFileName;
@@ -259,9 +281,11 @@ public class AddPillActivity extends AppCompatActivity {
 
                                     Log.i("Firebase", "Start making index");
 
-                                    Toast.makeText(mContext, "이미지 분석을 시작합니다.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(mContext, "약 정보 추출을 시작합니다.", Toast.LENGTH_LONG).show();
+                                    pTV.setText("약 정보 추출중...");
 
 
+                                    myPillList = new ArrayList<PillInfo>();
                                     // Indexing Aho Corasick Algorithm
 
                                     TreeMap<String, String> map = new TreeMap<String, String>();
@@ -277,10 +301,6 @@ public class AddPillActivity extends AppCompatActivity {
                                     for(int i=0;i<texts.length;i++){
                                         String item = texts[i];
 
-                                        Log.i("Firebase", item);
-
-//                                        List<AhoCorasickDoubleArrayTrie.Hit<String>> wordList = acdat.parseText(item);
-
                                         acdat.parseText(item, new AhoCorasickDoubleArrayTrie.IHit<String>()
                                         {
                                             @Override
@@ -290,9 +310,13 @@ public class AddPillActivity extends AppCompatActivity {
                                                     System.out.printf("[%d:%d]=%s\n", begin, end, value);
                                                     for(PillInfo pi : mPillList){
                                                         if(pi.ItemName == value){
+
+                                                            myPillList.add(pi);
+
                                                             String txt = pi.ItemName+pi.PillCategory+pi.PillStyle+pi.PillType;
-                                                            Toast.makeText(mContext, txt, Toast.LENGTH_LONG).show();
+//                                                            Toast.makeText(mContext, txt, Toast.LENGTH_LONG).show();
                                                             System.out.printf(txt);
+
 
                                                         }
                                                     }
@@ -302,6 +326,37 @@ public class AddPillActivity extends AppCompatActivity {
                                         });
                                     }
                                     Log.i("Firebase", "Done!");
+                                    //myPillLIst를 여기서 Firebase에 업로드하기
+                                    pTV.setText("서버에 약정보 저장중...");
+
+
+                                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                                    DatabaseReference databaseReference = firebaseDatabase.getReference();
+                                    DatabaseReference devRef = databaseReference.child("devices").child("0A:00:27:00:00:17").child("pills");
+
+                                    devRef.setValue(myPillList);
+
+                                    pB.setProgress(0);
+
+                                    pB.setVisibility(View.INVISIBLE);
+                                    pTV.setVisibility(View.INVISIBLE);
+
+                                    // 밥먹고하기
+                                    String str="";
+
+                                    for(int i=0;i<myPillList.size();i++){
+                                        TableRow row = new TableRow(mContext);
+                                        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                                        row.setLayoutParams(lp);
+
+                                        str+=(myPillList.get(i).ItemName+'('+myPillList.get(i).CompanyName+")");
+
+                                        if(i!= myPillList.size()-1){
+                                            str+=", ";
+                                        }
+                                    }
+                                    str+="가 서버에 등록되었습니다. \n 뒤로가기를 누르면 메인화면으로 돌아갑니다.";
+                                    mTextView.setText(str);
                                 }
                             }, new Response.ErrorListener() {
                         @Override
@@ -349,8 +404,6 @@ class PillInfo {
         this.PillStyle = PS;
         this.PillImage = PI;
         this.PillImage2 = PI2;
-        Log.i("APA", IN+CN+PT+PC+PS+PI+PI2);
-
     }
 }
 

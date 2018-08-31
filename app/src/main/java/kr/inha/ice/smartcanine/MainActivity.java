@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         outdoorButton = (ToggleButton) findViewById(R.id.outdoorButton);
         outdoorButton.setChecked(sf.getBoolean("btnOut_state",true));
         timeButton = (Button) findViewById(R.id.time);
+
         String medicineTime = "01시 19분";
         long now = System.currentTimeMillis();
         Date date = new Date(now);
