@@ -1,11 +1,13 @@
 package kr.inha.ice.smartcanine;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,8 +19,10 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +42,19 @@ public class MainActivity extends AppCompatActivity {
     /*---Firebase 변수들----*/
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    ToggleButton outdoorButton;
+    Button timeButton;
+    TextView slot0;
+    TextView slot1;
+    TextView slot2;
+    TextView slot3;
+    TextView slot4;
+    TextView slot5;
+    TextView slot6;
+    TextView slot7;
+    TextView slot8;
+    EditText memo;
+    TextFileManager mTextFileManager = new TextFileManager(this);
     /*---문자 전송 변수----*/
     SmsManager mSMSManager;
     int count=0;
@@ -45,16 +63,86 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences sf = getSharedPreferences("PrefOut", MODE_PRIVATE);
         Button userinfoButton = (Button) findViewById(R.id.userinfoButton);
-        final TextView slot0 = (TextView) findViewById(R.id.slot0);
-        final TextView slot1 = (TextView) findViewById(R.id.slot1);
-        final TextView slot2 = (TextView) findViewById(R.id.slot2);
-        final TextView slot3 = (TextView) findViewById(R.id.slot3);
-        final TextView slot4 = (TextView) findViewById(R.id.slot4);
-        final TextView slot5 = (TextView) findViewById(R.id.slot5);
-        final TextView slot6 = (TextView) findViewById(R.id.slot6);
-        final TextView slot7 = (TextView) findViewById(R.id.slot7);
-        final TextView slot8 = (TextView) findViewById(R.id.slot8);
+        Button saveButton = (Button) findViewById(R.id.saveButton);
+        Button loadButton = (Button) findViewById(R.id.loadButton);
+        Button deleteButton = (Button) findViewById(R.id.deleteButton);
+        outdoorButton = (ToggleButton) findViewById(R.id.outdoorButton);
+        outdoorButton.setChecked(sf.getBoolean("btnOut_state",true));
+        timeButton = (Button) findViewById(R.id.time);
+        String medicineTime = "01시 19분";
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH시 mm분");
+        String getTime = sdf.format(date);
+        Log.e("?",getTime);
+        if(getTime.equals(medicineTime)) {
+            Log.e("Good", "Good");
+        }
+        slot0 = (TextView) findViewById(R.id.slot0);
+        slot0.setText(sf.getString("slot0",""));
+        slot1 = (TextView) findViewById(R.id.slot1);
+        slot1.setText(sf.getString("slot1",""));
+        slot2 = (TextView) findViewById(R.id.slot2);
+        slot2.setText(sf.getString("slot2",""));
+        slot3 = (TextView) findViewById(R.id.slot3);
+        slot3.setText(sf.getString("slot3",""));
+        slot4 = (TextView) findViewById(R.id.slot4);
+        slot4.setText(sf.getString("slot4",""));
+        slot5 = (TextView) findViewById(R.id.slot5);
+        slot5.setText(sf.getString("slot5",""));
+        slot6 = (TextView) findViewById(R.id.slot6);
+        slot6.setText(sf.getString("slot6",""));
+        slot7 = (TextView) findViewById(R.id.slot7);
+        slot7.setText(sf.getString("slot7",""));
+        slot8 = (TextView) findViewById(R.id.slot8);
+        slot8.setText(sf.getString("slot8",""));
+        memo = (EditText) findViewById(R.id.memo);
+        memo.setText(sf.getString("memo",""));
+
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.set(Calendar.HOUR_OF_DAY, 9);
+        mCalendar.set(Calendar.MINUTE,25);
+        mCalendar.set(Calendar.SECOND,0);
+
+        Intent mAlarmIntent = new Intent("ALARM_START");
+        PendingIntent mPendingIntent =
+                PendingIntent.getBroadcast(
+                        this,
+                        0,
+                        mAlarmIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        AlarmManager mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mAlarmManager.set(
+                AlarmManager.RTC_WAKEUP,
+                mCalendar.getTimeInMillis(),
+                mPendingIntent
+        );
+
+        /*----메모----*/
+        loadButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String memoData = mTextFileManager.load();
+                memo.setText(memoData);
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                String memoData = memo.getText().toString();
+                mTextFileManager.save(memoData);
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                mTextFileManager.delete();
+                memo.setText("");
+            }
+        });
 
         /*----UUID와 문자 전송을 위한 권한확인(API 23 이상)----*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
@@ -217,6 +305,24 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences prefs = getSharedPreferences("PrefOut", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("btnOut_state", outdoorButton.isChecked());
+        editor.putString("slot0", slot0.getText().toString());
+        editor.putString("slot1", slot1.getText().toString());
+        editor.putString("slot2", slot2.getText().toString());
+        editor.putString("slot3", slot3.getText().toString());
+        editor.putString("slot4", slot4.getText().toString());
+        editor.putString("slot5", slot5.getText().toString());
+        editor.putString("slot6", slot6.getText().toString());
+        editor.putString("slot7", slot7.getText().toString());
+        editor.putString("slot8", slot8.getText().toString());
+        editor.putString("memo", memo.getText().toString());
+        editor.apply();
     }
     /*----UUID 받아오기----*/
     public String GetDevicesUUID(Context mContext) {
