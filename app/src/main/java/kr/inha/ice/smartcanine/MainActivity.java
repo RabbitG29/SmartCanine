@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new AlarmHATT(getApplicationContext()).Alarm();
         SharedPreferences sf = getSharedPreferences("PrefOut", MODE_PRIVATE);
         Button userinfoButton = (Button) findViewById(R.id.userinfoButton);
         Button saveButton = (Button) findViewById(R.id.saveButton);
@@ -72,16 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Button addButton = (Button) findViewById(R.id.add);
         outdoorButton = (ToggleButton) findViewById(R.id.outdoorButton);
         outdoorButton.setChecked(sf.getBoolean("btnOut_state",true));
-        timeButton = (Button) findViewById(R.id.time);
-        String medicineTime = "01시 19분";
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat sdf = new SimpleDateFormat("HH시 mm분");
-        String getTime = sdf.format(date);
-        Log.e("?",getTime);
-        if(getTime.equals(medicineTime)) {
-            Log.e("Good", "Good");
-        }
+
         slot0 = (TextView) findViewById(R.id.slot0);
         slot0.setText(sf.getString("slot0",""));
         slot1 = (TextView) findViewById(R.id.slot1);
@@ -105,26 +97,6 @@ public class MainActivity extends AppCompatActivity {
         empty = (TextView) findViewById(R.id.empty);
         empty.setText(sf.getString("empty",""));
 
-        Calendar mCalendar = Calendar.getInstance();
-        mCalendar.set(Calendar.HOUR_OF_DAY, 9);
-        mCalendar.set(Calendar.MINUTE,25);
-        mCalendar.set(Calendar.SECOND,0);
-
-        Intent mAlarmIntent = new Intent("ALARM_START");
-        PendingIntent mPendingIntent =
-                PendingIntent.getBroadcast(
-                        this,
-                        0,
-                        mAlarmIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        AlarmManager mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        mAlarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                mCalendar.getTimeInMillis(),
-                mPendingIntent
-        );
 
         /*----메모----*/
         loadButton.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +128,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        /*--Firebase---*/
+        final DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
+        final DatabaseReference logRef = databaseReference.child("devices");
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -170,6 +144,10 @@ public class MainActivity extends AppCompatActivity {
                 slot6.setText("O");
                 slot7.setText("O");
                 slot8.setText("O");
+
+                logRef.child("0A:00:27:00:00:17").child("currentPos").setValue(0); // firebase에 set
+                Log.e("tag","execute");
+                Toast.makeText(getApplicationContext(), "재급여되었습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -188,9 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        /*--Firebase---*/
-        final DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
-        final DatabaseReference logRef = databaseReference.child("devices");
+
         logRef.child("0A:00:27:00:00:17").child("currentPos").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -303,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Log.e("send","send");
                             User user = dataSnapshot.getValue(User.class);
-                            //sendSms2(user.userName, user.gdPhone); // 문자 보내기
+                            sendSms2(user.userName, user.gdPhone); // 문자 보내기
                             usersRef.child("1").removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
                         }
 
@@ -455,6 +431,26 @@ public class MainActivity extends AppCompatActivity {
         }
         Toast.makeText(this, "'뒤로' 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
         lastTimeBackPressed = System.currentTimeMillis();
+    }
+
+    public class AlarmHATT {
+        private Context context;
+        public AlarmHATT(Context context) {
+            this.context=context;
+        }
+        public void Alarm() {
+            Log.e("알람씨발","개좆이네");
+            AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(MainActivity.this, BroadcastD.class);
+
+            PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+
+            Calendar calendar = Calendar.getInstance();
+            //알람시간 calendar에 set해주기
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 18, 51, 0);
+            //알람 예약
+            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+        }
     }
 }
 /*----사용자 정의형 자료형----*/

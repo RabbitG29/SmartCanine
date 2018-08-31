@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="kr.inha.ice.smartcanine">
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -9,8 +9,10 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -19,9 +21,7 @@
         android:label="스마트 약통"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="kr.inha.ice.smartcanine"
@@ -29,7 +29,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <activity
@@ -45,19 +45,13 @@
         <activity
             android:name=".UserinfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AddPillActivity"></activity>
-
-        <receiver android:name=".AlarmReceiver" android:exported="true">
-            <intent-filter>
-                <action android:name="ALARM_START" />
-            </intent-filter>
-        </receiver>
+        <activity android:name=".AddPillActivity" />
 
         <service
-            android:name=".AlarmSoundService"
+            android:name=".TestousSoundService"
             android:enabled="true"
-            android:exported="true"/>
-
+            android:exported="true"></service>
+        <receiver android:name=".BroadcastD"></receiver>
     </application>
 
 </manifest>
