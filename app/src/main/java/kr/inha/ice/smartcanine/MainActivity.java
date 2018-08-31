@@ -34,8 +34,6 @@ import java.io.Console;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -74,7 +72,11 @@ public class MainActivity extends AppCompatActivity {
         Button loadButton = (Button) findViewById(R.id.loadButton);
         Button deleteButton = (Button) findViewById(R.id.deleteButton);
         Button addButton = (Button) findViewById(R.id.add);
+<<<<<<< HEAD
 
+=======
+        Button infoButton = (Button) findViewById(R.id.info);
+>>>>>>> 375efbb16d02d8a1e6bd1576b999bcfb60110e8c
         outdoorButton = (ToggleButton) findViewById(R.id.outdoorButton);
         outdoorButton.setChecked(sf.getBoolean("btnOut_state",true));
         timeButton = (Button) findViewById(R.id.time);
@@ -179,21 +181,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        addButton.setOnClickListener(new View.OnClickListener(){
+        infoButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                empty.setText("");
-                slot0.setText("O");
-                slot1.setText("O");
-                slot2.setText("O");
-                slot3.setText("O");
-                slot4.setText("O");
-                slot5.setText("O");
-                slot6.setText("O");
-                slot7.setText("O");
-                slot8.setText("O");
+                Intent intent = new Intent(getApplicationContext(), PillInfoActivity.class);
+                startActivity(intent);
             }
         });
+
+
 
         /*----UUID와 문자 전송을 위한 권한확인(API 23 이상)----*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
@@ -213,6 +209,24 @@ public class MainActivity extends AppCompatActivity {
         /*--Firebase---*/
         final DatabaseReference usersRef = databaseReference.child("users"); // child의 인자가 테이블 이름? 정도로 되는듯?
         final DatabaseReference logRef = databaseReference.child("devices");
+        addButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                empty.setText("");
+                slot0.setText("O");
+                slot1.setText("O");
+                slot2.setText("O");
+                slot3.setText("O");
+                slot4.setText("O");
+                slot5.setText("O");
+                slot6.setText("O");
+                slot7.setText("O");
+                slot8.setText("O");
+                logRef.child("0A:00:27:00:00:17").child("currentPos").setValue(0); // firebase에 set
+                Log.e("tag","execute");
+                Toast.makeText(getApplicationContext(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
         logRef.child("0A:00:27:00:00:17").child("currentPos").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -325,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Log.e("send","send");
                             User user = dataSnapshot.getValue(User.class);
-                            //sendSms2(user.userName, user.gdPhone); // 문자 보내기
+                            sendSms2(user.userName, user.gdPhone); // 문자 보내기
                             usersRef.child("1").removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
                         }
 
@@ -344,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
                         Date date = new Date(now);
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분");
                         String getTime = sdf.format(date);
-                        //sendSms(user.userName, user.gdPhone, getTime); // 문자 보내기
+                        sendSms(user.userName, user.gdPhone, getTime); // 문자 보내기
                         usersRef.child("1").removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
                     }
 

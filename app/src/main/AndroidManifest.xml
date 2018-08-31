@@ -18,9 +18,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="스마트 약통"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
@@ -57,7 +57,7 @@
         </receiver>
 
         <service
-            android:name=".AlarmSoundService"
+            android:name=".TestousSoundService"
             android:enabled="true"
             android:exported="true" />
 
