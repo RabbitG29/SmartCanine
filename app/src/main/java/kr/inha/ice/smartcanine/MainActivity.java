@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     TextView slot7;
     TextView slot8;
     EditText memo;
+    TextView empty;
     TextFileManager mTextFileManager = new TextFileManager(this);
     /*---문자 전송 변수----*/
     SmsManager mSMSManager;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         Button saveButton = (Button) findViewById(R.id.saveButton);
         Button loadButton = (Button) findViewById(R.id.loadButton);
         Button deleteButton = (Button) findViewById(R.id.deleteButton);
+        Button addButton = (Button) findViewById(R.id.add);
         outdoorButton = (ToggleButton) findViewById(R.id.outdoorButton);
         outdoorButton.setChecked(sf.getBoolean("btnOut_state",true));
         timeButton = (Button) findViewById(R.id.time);
@@ -100,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         slot8.setText(sf.getString("slot8",""));
         memo = (EditText) findViewById(R.id.memo);
         memo.setText(sf.getString("memo",""));
+        empty = (TextView) findViewById(R.id.empty);
+        empty.setText(sf.getString("empty",""));
 
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.set(Calendar.HOUR_OF_DAY, 9);
@@ -153,6 +157,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        addButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                empty.setText("");
+                slot0.setText("O");
+                slot1.setText("O");
+                slot2.setText("O");
+                slot3.setText("O");
+                slot4.setText("O");
+                slot5.setText("O");
+                slot6.setText("O");
+                slot7.setText("O");
+                slot8.setText("O");
+            }
+        });
+
         /*----UUID와 문자 전송을 위한 권한확인(API 23 이상)----*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 50);
@@ -180,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 long currentPos = dataSnapshot.getValue(Long.class);
                 if(currentPos==0) {
-                    slot0.setText("O");
+                    slot0.setText("X");
                     slot1.setText("O");
                     slot2.setText("O");
                     slot3.setText("O");
@@ -192,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if(currentPos==1) {
                     slot0.setText("X");
-                    slot1.setText("O");
+                    slot1.setText("X");
                     slot2.setText("O");
                     slot3.setText("O");
                     slot4.setText("O");
@@ -204,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 else if(currentPos==2) {
                     slot0.setText("X");
                     slot1.setText("X");
-                    slot2.setText("O");
+                    slot2.setText("X");
                     slot3.setText("O");
                     slot4.setText("O");
                     slot5.setText("O");
@@ -216,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                     slot0.setText("X");
                     slot1.setText("X");
                     slot2.setText("X");
-                    slot3.setText("O");
+                    slot3.setText("X");
                     slot4.setText("O");
                     slot5.setText("O");
                     slot6.setText("O");
@@ -228,24 +248,13 @@ public class MainActivity extends AppCompatActivity {
                     slot1.setText("X");
                     slot2.setText("X");
                     slot3.setText("X");
-                    slot4.setText("O");
-                    slot5.setText("O");
-                    slot6.setText("O");
-                    slot7.setText("O");
-                    slot8.setText("O");
-                }
-                else if(currentPos==5) {
-                    slot0.setText("X");
-                    slot1.setText("X");
-                    slot2.setText("X");
-                    slot3.setText("X");
                     slot4.setText("X");
                     slot5.setText("O");
                     slot6.setText("O");
                     slot7.setText("O");
                     slot8.setText("O");
                 }
-                else if(currentPos==6) {
+                else if(currentPos==5) {
                     slot0.setText("X");
                     slot1.setText("X");
                     slot2.setText("X");
@@ -288,6 +297,21 @@ public class MainActivity extends AppCompatActivity {
                     slot6.setText("X");
                     slot7.setText("X");
                     slot8.setText("X");
+                    empty.setText("약을 모두 복용하셨습니다. 다시 급여해 주세요");
+                    usersRef.child("1").addValueEventListener(new ValueEventListener() { // 데이터 Read를 위한 리스너
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Log.e("send","send");
+                            User user = dataSnapshot.getValue(User.class);
+                            //sendSms2(user.userName, user.gdPhone); // 문자 보내기
+                            usersRef.child("1").removeEventListener(this); // 해제를 꼭 해줘야 나중에 다시 실행이 안 됨!
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
                 usersRef.child("1").addValueEventListener(new ValueEventListener() { // 데이터 Read를 위한 리스너
                     @Override
@@ -331,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("slot7", slot7.getText().toString());
         editor.putString("slot8", slot8.getText().toString());
         editor.putString("memo", memo.getText().toString());
+        editor.putString("empty", empty.getText().toString());
         editor.apply();
     }
     /*----UUID 받아오기----*/
@@ -354,6 +379,24 @@ public class MainActivity extends AppCompatActivity {
 
         //메시지
         String smsText = userName+"님이 "+getTime+"에 약을 복용하셨습니다.";
+        Log.e("body", smsText);
+        //송신 인텐트
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT"), 0);
+        //수신 인텐트
+        PendingIntent recvPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED"), 0);
+
+        registerReceiver(mSentReceiver, new IntentFilter("SMS_SENT"));
+        registerReceiver(mRecvReceiver, new IntentFilter("SMS_DELIVERED"));
+
+
+        mSMSManager.sendTextMessage(gdPhone, null, smsText, sentPI, recvPI);
+
+    }
+    public void sendSms2(String userName, String gdPhone){
+        mSMSManager = SmsManager.getDefault();
+
+        //메시지
+        String smsText = userName+"님이 약을 모두 복용하셨습니다.";
         Log.e("body", smsText);
         //송신 인텐트
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT"), 0);
